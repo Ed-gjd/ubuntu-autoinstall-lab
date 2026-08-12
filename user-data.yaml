@@ -1,0 +1,53 @@
+#cloud-config
+autoinstall:
+  version: 1
+  refresh-installer:
+    update: false
+  updates: none
+  source:
+    id: ubuntu-desktop
+  locale: zh_CN.UTF-8
+  keyboard:
+    layout: cn
+  timezone: Asia/Shanghai
+  identity:
+    hostname: ubuntu24
+    realname: Ubuntu User
+    username: user
+    password: "$6$u0NyKm8Srvi0393c$GZbCe/vDhPRBEoLT1XmiU9OzArjIKqhlI65jeSVFrIGqF1NY9tGHRS3GYQFs.RUnGwoY7eMDyV7ZdXX0qwMiO0"
+  ssh:
+    install-server: true
+    allow-pw: true
+  storage:
+    layout:
+      name: lvm
+  packages:
+    - build-essential
+    - git
+    - curl
+    - wget
+    - vim
+    - htop
+    - net-tools
+    - open-vm-tools-desktop
+    - docker.io
+    - python3-pip
+    - python3-venv
+    - python3-numpy
+    - python3-pandas
+    - python3-matplotlib
+    - python3-scipy
+    - python3-sklearn
+    - ipython3
+    - jupyter-notebook
+    - language-pack-zh-hans
+    - language-pack-gnome-zh-hans
+    - fonts-noto-cjk
+    - fonts-noto-cjk-extra
+    - ibus-libpinyin
+    - gnome-tweaks
+  late-commands:
+    - curtin in-target -- bash -c 'locale-gen zh_CN.UTF-8; printf "LANG=zh_CN.UTF-8\nLC_NUMERIC=zh_CN.UTF-8\nLC_TIME=zh_CN.UTF-8\nLC_MONETARY=zh_CN.UTF-8\nLC_PAPER=zh_CN.UTF-8\nLC_MEASUREMENT=zh_CN.UTF-8\n" > /etc/default/locale'
+    - curtin in-target -- bash -c 'mkdir -p /etc/dconf/db/local.d; printf "[org/gnome/desktop/input-sources]\nsources=[(\"ibus\", \"pinyin\"), (\"xkb\", \"us\")]\n" > /etc/dconf/db/local.d/00-input-source; dconf update || true'
+    - curtin in-target -- bash -c 'usermod -aG docker user || true'
+  shutdown: poweroff
